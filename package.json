@@ -1,0 +1,29 @@
+{
+  "name": "queue-event-emitter",
+  "version": "1.0.0",
+  "description": "Simple `EventEmitter` which runs every event in a queue",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itsmepetrov/queue-event-emitter.git"
+  },
+  "author": {
+    "name": "Anton Petrov",
+    "email": "petrov.aap@gmail.com",
+    "url": "https://github.com/itsmepetrov"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/itsmepetrov/queue-event-emitter/issues"
+  },
+  "dependencies": {
+    "promise-queue": "^2.2.5"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0"
+  }
+}
