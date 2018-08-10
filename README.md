@@ -26,8 +26,8 @@ const emitter = new QueueEventEmitter()
 
 // event handlers
 emitter.on('first', async (data) => {
-    await sleep(3000)
-    console.log('data:', data)
+  await sleep(3000)
+  console.log('data:', data)
 })
 emitter.on('second', async (data) => {
     await sleep(1000)

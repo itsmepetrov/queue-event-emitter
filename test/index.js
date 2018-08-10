@@ -2,9 +2,9 @@ const chai = require('chai')
 const EventEmitter = require('events')
 const QueueEventEmitter = require('..')
 
-describe('queue-event-emitter', function () {
-  const expect = chai.expect
-  const sleep = (time) => (
+describe('queue-event-emitter', () => {
+  const { expect } = chai
+  const sleep = time => (
     new Promise(resolve => setTimeout(resolve, time))
   )
   const wait = (emitter) => {
@@ -18,18 +18,18 @@ describe('queue-event-emitter', function () {
     return new Promise(next)
   }
 
-  describe('QueueEventEmitter', function () {
-    it('defaultMaxListeners', function () {
+  describe('QueueEventEmitter', () => {
+    it('defaultMaxListeners', () => {
       expect(
         QueueEventEmitter.defaultMaxListeners
       ).to.equal(
         EventEmitter.defaultMaxListeners
       )
     })
-    it('listenerCount', function () {
+    it('listenerCount', () => {
       const emitter = new QueueEventEmitter()
       const handler = () => {}
-    
+
       emitter.on('count', handler)
       emitter.on('count', handler)
       emitter.on('count', handler)
@@ -43,30 +43,29 @@ describe('queue-event-emitter', function () {
     })
   })
 
-  describe('emitter', function () {
-    it('isEmpty', async function () {
+  describe('emitter', () => {
+    it('isEmpty', async () => {
       const emitter = new QueueEventEmitter()
-      const result = []
-      const handler = (time) => () => sleep(100)
+      const handler = () => () => sleep(100)
 
       emitter.on('try', handler(100))
 
       emitter.emit('try')
-      expect(emitter.isEmpty()).to.be.false
+      expect(emitter.isEmpty()).to.equal(false)
       emitter.emit('try')
-      expect(emitter.isEmpty()).to.be.false
+      expect(emitter.isEmpty()).to.equal(false)
       emitter.emit('try')
-      expect(emitter.isEmpty()).to.be.false
+      expect(emitter.isEmpty()).to.equal(false)
 
       await sleep(400)
 
-      expect(emitter.isEmpty()).to.be.true
+      expect(emitter.isEmpty()).to.equal(true)
     })
 
-    it('on', async function () {
+    it('on', async () => {
       const emitter = new QueueEventEmitter()
       const result = []
-      const handler = (time) => (data) => (
+      const handler = time => data => (
         sleep(time).then(() => result.push(data))
       )
 
@@ -84,10 +83,10 @@ describe('queue-event-emitter', function () {
       expect(result).to.eql([3, 1, 2, 4, 5])
     })
 
-    it('addListener', async function () {
+    it('addListener', async () => {
       const emitter = new QueueEventEmitter()
       const result = []
-      const handler = (time) => (data) => (
+      const handler = time => data => (
         sleep(time).then(() => result.push(data))
       )
 
@@ -105,7 +104,7 @@ describe('queue-event-emitter', function () {
       expect(result).to.eql([3, 1, 2, 4, 5])
     })
 
-    it('prependListener', async function () {
+    it('prependListener', async () => {
       const emitter = new QueueEventEmitter()
       const result = []
       const handler = (time, number) => () => (
@@ -122,10 +121,10 @@ describe('queue-event-emitter', function () {
       expect(result).to.eql([2, 1])
     })
 
-    it('once', async function () {
+    it('once', async () => {
       const emitter = new QueueEventEmitter()
       const result = []
-      const handler = (data) => (
+      const handler = data => (
         sleep(100).then(() => result.push(data))
       )
 
@@ -138,7 +137,7 @@ describe('queue-event-emitter', function () {
       expect(result).to.eql([1])
     })
 
-    it('prependOnceListener', async function () {
+    it('prependOnceListener', async () => {
       const emitter = new QueueEventEmitter()
       const result = []
       const handler = (time, number) => () => (
@@ -156,10 +155,10 @@ describe('queue-event-emitter', function () {
       expect(result).to.eql([2, 1])
     })
 
-    it('off', async function () {
+    it('off', async () => {
       const emitter = new QueueEventEmitter()
       const result = []
-      const handler = (data) => (
+      const handler = data => (
         sleep(100).then(() => result.push(data))
       )
 
@@ -173,10 +172,10 @@ describe('queue-event-emitter', function () {
       expect(result).to.eql([1])
     })
 
-    it('removeListener', async function () {
+    it('removeListener', async () => {
       const emitter = new QueueEventEmitter()
       const result = []
-      const handler = (data) => (
+      const handler = data => (
         sleep(100).then(() => result.push(data))
       )
 
@@ -190,10 +189,10 @@ describe('queue-event-emitter', function () {
       expect(result).to.eql([1])
     })
 
-    it('removeAllListeners', async function () {
+    it('removeAllListeners', async () => {
       const emitter = new QueueEventEmitter()
       const result = []
-      const handler = (data) => (
+      const handler = data => (
         sleep(100).then(() => result.push(data))
       )
 
@@ -210,7 +209,7 @@ describe('queue-event-emitter', function () {
       expect(result).to.eql([])
     })
 
-    it('getMaxListeners', async function () {
+    it('getMaxListeners', async () => {
       const emitter = new QueueEventEmitter()
       const nodeEmitter = new EventEmitter()
 
@@ -221,7 +220,7 @@ describe('queue-event-emitter', function () {
       )
     })
 
-    it('setMaxListeners', async function () {
+    it('setMaxListeners', async () => {
       const emitter = new QueueEventEmitter()
       const result = emitter.getMaxListeners() + 1
 
@@ -230,7 +229,7 @@ describe('queue-event-emitter', function () {
       expect(emitter.getMaxListeners()).to.equal(result)
     })
 
-    it('listenerCount', async function () {
+    it('listenerCount', async () => {
       const emitter = new QueueEventEmitter()
       const handler = () => {}
 
@@ -246,7 +245,7 @@ describe('queue-event-emitter', function () {
       expect(emitter.listenerCount('three')).to.equal(3)
     })
 
-    it('listeners', async function () {
+    it('listeners', async () => {
       const emitter = new QueueEventEmitter()
       const firstHandler = () => {}
       const secondHandler = () => {}

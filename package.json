@@ -4,12 +4,20 @@
   "description": "Simple `EventEmitter` which runs every event handler in a queue",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/itsmepetrov/queue-event-emitter.git"
   },
+  "keywords": [
+    "eventemitter",
+    "concurrency",
+    "emitter",
+    "event",
+    "queue"
+  ],
   "author": {
     "name": "Anton Petrov",
     "email": "petrov.aap@gmail.com",
@@ -24,6 +32,9 @@
   },
   "devDependencies": {
     "chai": "^4.1.2",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-plugin-import": "^2.13.0",
     "mocha": "^5.2.0"
   }
 }
