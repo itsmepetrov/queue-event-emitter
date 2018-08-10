@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/queue-event-emitter.svg?style=flat-square)](https://www.npmjs.com/package/queue-event-emitter)
 [![build status](https://img.shields.io/travis/itsmepetrov/queue-event-emitter/master.svg?style=flat-square)](https://travis-ci.org/itsmepetrov/queue-event-emitter)
 
-`QueueEventEmitter` is a simple `EventEmitter` which runs every event in a queue.
+`QueueEventEmitter` is a simple `EventEmitter` which runs every event handler in a queue.
 
 ## Installation
 

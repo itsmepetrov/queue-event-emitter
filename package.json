@@ -1,7 +1,7 @@
 {
   "name": "queue-event-emitter",
-  "version": "1.0.0",
-  "description": "Simple `EventEmitter` which runs every event in a queue",
+  "version": "2.0.0",
+  "description": "Simple `EventEmitter` which runs every event handler in a queue",
   "main": "index.js",
   "scripts": {
     "test": "mocha"

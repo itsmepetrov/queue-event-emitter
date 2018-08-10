@@ -26,6 +26,21 @@ describe('queue-event-emitter', function () {
         EventEmitter.defaultMaxListeners
       )
     })
+    it('listenerCount', function () {
+      const emitter = new QueueEventEmitter()
+      const handler = () => {}
+    
+      emitter.on('count', handler)
+      emitter.on('count', handler)
+      emitter.on('count', handler)
+
+      expect(
+        QueueEventEmitter.listenerCount(emitter, 'none')
+      ).to.equal(0)
+      expect(
+        QueueEventEmitter.listenerCount(emitter, 'count')
+      ).to.equal(3)
+    })
   })
 
   describe('emitter', function () {
@@ -193,6 +208,60 @@ describe('queue-event-emitter', function () {
       await wait(emitter)
 
       expect(result).to.eql([])
+    })
+
+    it('getMaxListeners', async function () {
+      const emitter = new QueueEventEmitter()
+      const nodeEmitter = new EventEmitter()
+
+      expect(
+        emitter.getMaxListeners()
+      ).to.equal(
+        nodeEmitter.getMaxListeners()
+      )
+    })
+
+    it('setMaxListeners', async function () {
+      const emitter = new QueueEventEmitter()
+      const result = emitter.getMaxListeners() + 1
+
+      emitter.setMaxListeners(result)
+
+      expect(emitter.getMaxListeners()).to.equal(result)
+    })
+
+    it('listenerCount', async function () {
+      const emitter = new QueueEventEmitter()
+      const handler = () => {}
+
+      emitter.on('one', handler)
+      emitter.on('two', handler)
+      emitter.on('two', handler)
+      emitter.on('three', handler)
+      emitter.on('three', handler)
+      emitter.on('three', handler)
+
+      expect(emitter.listenerCount('one')).to.equal(1)
+      expect(emitter.listenerCount('two')).to.equal(2)
+      expect(emitter.listenerCount('three')).to.equal(3)
+    })
+
+    it('listeners', async function () {
+      const emitter = new QueueEventEmitter()
+      const firstHandler = () => {}
+      const secondHandler = () => {}
+      const thirdHandler = () => {}
+
+      emitter.on('first', firstHandler)
+      emitter.on('second', secondHandler)
+      emitter.on('second', secondHandler)
+      emitter.on('third', thirdHandler)
+      emitter.on('third', thirdHandler)
+      emitter.on('third', thirdHandler)
+
+      expect(emitter.listeners('first')).to.eql([firstHandler])
+      expect(emitter.listeners('second')).to.eql([secondHandler, secondHandler])
+      expect(emitter.listeners('third')).to.eql([thirdHandler, thirdHandler, thirdHandler])
     })
   })
 })
