@@ -12,7 +12,7 @@ describe('queue-event-emitter', () => {
       if (emitter.isEmpty()) {
         resolve()
       } else {
-        sleep(100).then(() => next(resolve))
+        sleep(10).then(() => next(resolve))
       }
     }
     return new Promise(next)
@@ -46,9 +46,9 @@ describe('queue-event-emitter', () => {
   describe('emitter', () => {
     it('isEmpty', async () => {
       const emitter = new QueueEventEmitter()
-      const handler = () => () => sleep(100)
+      const handler = () => sleep(10)
 
-      emitter.on('try', handler(100))
+      emitter.on('try', handler)
 
       emitter.emit('try')
       expect(emitter.isEmpty()).to.equal(false)
@@ -57,7 +57,7 @@ describe('queue-event-emitter', () => {
       emitter.emit('try')
       expect(emitter.isEmpty()).to.equal(false)
 
-      await sleep(400)
+      await sleep(40)
 
       expect(emitter.isEmpty()).to.equal(true)
     })
@@ -69,18 +69,15 @@ describe('queue-event-emitter', () => {
         sleep(time).then(() => result.push(data))
       )
 
-      emitter.on('first', handler(300))
-      emitter.on('second', handler(100))
+      emitter.on('first', handler(30))
+      emitter.on('second', handler(10))
 
       emitter.emit('first', 3)
       emitter.emit('second', 1)
-      emitter.emit('first', 2)
-      emitter.emit('first', 4)
-      emitter.emit('second', 5)
 
       await wait(emitter)
 
-      expect(result).to.eql([3, 1, 2, 4, 5])
+      expect(result).to.eql([3, 1])
     })
 
     it('addListener', async () => {
@@ -90,18 +87,15 @@ describe('queue-event-emitter', () => {
         sleep(time).then(() => result.push(data))
       )
 
-      emitter.addListener('first', handler(300))
-      emitter.addListener('second', handler(100))
+      emitter.addListener('first', handler(30))
+      emitter.addListener('second', handler(10))
 
       emitter.emit('first', 3)
       emitter.emit('second', 1)
-      emitter.emit('first', 2)
-      emitter.emit('first', 4)
-      emitter.emit('second', 5)
 
       await wait(emitter)
 
-      expect(result).to.eql([3, 1, 2, 4, 5])
+      expect(result).to.eql([3, 1])
     })
 
     it('prependListener', async () => {
@@ -111,8 +105,8 @@ describe('queue-event-emitter', () => {
         sleep(time).then(() => result.push(number))
       )
 
-      emitter.prependListener('prepend', handler(300, 1))
-      emitter.prependListener('prepend', handler(100, 2))
+      emitter.prependListener('prepend', handler(30, 1))
+      emitter.prependListener('prepend', handler(10, 2))
 
       emitter.emit('prepend', null)
 
@@ -125,7 +119,7 @@ describe('queue-event-emitter', () => {
       const emitter = new QueueEventEmitter()
       const result = []
       const handler = data => (
-        sleep(100).then(() => result.push(data))
+        sleep(10).then(() => result.push(data))
       )
 
       emitter.once('onlyonce', handler)
@@ -144,8 +138,8 @@ describe('queue-event-emitter', () => {
         sleep(time).then(() => result.push(number))
       )
 
-      emitter.prependOnceListener('prepend', handler(300, 1))
-      emitter.prependOnceListener('prepend', handler(100, 2))
+      emitter.prependOnceListener('prepend', handler(30, 1))
+      emitter.prependOnceListener('prepend', handler(10, 2))
 
       emitter.emit('prepend', null)
       emitter.emit('prepend', null)
@@ -159,7 +153,7 @@ describe('queue-event-emitter', () => {
       const emitter = new QueueEventEmitter()
       const result = []
       const handler = data => (
-        sleep(100).then(() => result.push(data))
+        sleep(10).then(() => result.push(data))
       )
 
       emitter.on('remove', handler)
@@ -176,7 +170,7 @@ describe('queue-event-emitter', () => {
       const emitter = new QueueEventEmitter()
       const result = []
       const handler = data => (
-        sleep(100).then(() => result.push(data))
+        sleep(10).then(() => result.push(data))
       )
 
       emitter.on('remove', handler)
@@ -193,7 +187,7 @@ describe('queue-event-emitter', () => {
       const emitter = new QueueEventEmitter()
       const result = []
       const handler = data => (
-        sleep(100).then(() => result.push(data))
+        sleep(10).then(() => result.push(data))
       )
 
       emitter.on('one', handler)
@@ -261,6 +255,50 @@ describe('queue-event-emitter', () => {
       expect(emitter.listeners('first')).to.eql([firstHandler])
       expect(emitter.listeners('second')).to.eql([secondHandler, secondHandler])
       expect(emitter.listeners('third')).to.eql([thirdHandler, thirdHandler, thirdHandler])
+    })
+  })
+
+  describe('options', () => {
+    it('concurrency: 1', async () => {
+      const emitter = new QueueEventEmitter({ concurrency: 1 })
+      const result = []
+      const handler = time => data => (
+        sleep(time).then(() => result.push(data))
+      )
+
+      emitter.on('first', handler(30))
+      emitter.on('second', handler(10))
+
+      emitter.emit('first', 3)
+      emitter.emit('second', 1)
+      emitter.emit('first', 2)
+      emitter.emit('first', 4)
+      emitter.emit('second', 5)
+
+      await wait(emitter)
+
+      expect(result).to.eql([3, 1, 2, 4, 5])
+    })
+
+    it('concurrency: 2', async () => {
+      const emitter = new QueueEventEmitter({ concurrency: 2 })
+      const result = []
+      const handler = time => data => (
+        sleep(time).then(() => result.push(data))
+      )
+
+      emitter.on('first', handler(30))
+      emitter.on('second', handler(10))
+
+      emitter.emit('first', 3)
+      emitter.emit('second', 1)
+      emitter.emit('first', 2)
+      emitter.emit('first', 4)
+      emitter.emit('second', 5)
+
+      await wait(emitter)
+
+      expect(result).to.eql([1, 3, 2, 5, 4])
     })
   })
 })

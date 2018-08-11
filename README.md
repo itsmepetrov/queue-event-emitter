@@ -24,23 +24,37 @@ const sleep = (time) => (
 // event emitter
 const emitter = new QueueEventEmitter()
 
-// event handlers
+// event handlers, should return promise
 emitter.on('first', async (data) => {
   await sleep(3000)
   console.log('data:', data)
 })
 emitter.on('second', async (data) => {
-    await sleep(1000)
-    console.log('data:', data)
+  await sleep(1000)
+  console.log('data:', data)
+})
+emitter.on('third', async (data) => {
+  await sleep(10)
+  console.log('data:', data)
 })
 
 // send events
 emitter.emit('first', 10)
 emitter.emit('second', 20)
+emitter.emit('third', 30)
+emitter.emit('first', 40)
+emitter.emit('third', 50)
+emitter.emit('third', 60)
+emitter.emit('second', 70)
 
 // result in console will be
 // data: 10
 // data: 20
+// data: 30
+// data: 40
+// data: 50
+// data: 60
+// data: 70
 ```
 
 ## API
